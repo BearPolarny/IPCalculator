@@ -86,18 +86,24 @@ class IPCalc:
 
         available_hosts -= 2
 
+        '''
+        Lepiej byłoby robić jako 2**(liczba_zer)-2
+        Ale nie przechowuję nigdzie tej liczby
+        Musiałbym ją wyliczać z maski
+        '''
+
         return available_hosts
 
     def __str__(self):
 
         if self.__PRINT_TYPE__ == 'dec':
-            string = 'IP: '         + str(self.ip)          + '\n' + \
-                     'Mask: '       + str(self.mask)        + '\n' + \
-                     'Network: '    + str(self.network)     + '\n' + \
-                     'Broadcast: '  + str(self.broadcast)   + '\n' + \
-                     'Min Host: '   + str(self.min_Host)    + '\n' + \
-                     'Max Host: '   + str(self.max_Host)    + '\n' + \
-                     'Hosts: '      + str(self.hosts)       + '\n'
+            string = 'IP:         ' + str(list(self.ip))    + '\n' + \
+                     'Mask:       ' + str(list(self.mask))  + '\n' + \
+                     'Network:    ' + str(self.network)     + '\n' + \
+                     'Broadcast:  ' + str(self.broadcast)   + '\n' + \
+                     'Min Host:   ' + str(self.min_Host)    + '\n' + \
+                     'Max Host:   ' + str(self.max_Host)    + '\n' + \
+                     'Hosts:      ' + str(self.hosts)       + '\n'
         else:
             string = 'Nie chce mi się teraz'
 
