@@ -6,11 +6,12 @@ class IPCalc:
 
     __viable_octets = [255, 254, 252, 248, 240, 224, 192, 128, 0]
 
-    def __init__(self, ip, mask):
+    def __init__(self, ip, mask, string_type='dec'):
         """
         :param ip: Address IP in '0.0.0.0' format
         :param mask: IP mask in '0.0.0.0' or 'n' format
         """
+        self.__PRINT_TYPE__ = string_type
         self.ip, self.mask = self.__read_ip__(ip, mask)
         self.network, self.broadcast = self.__calculate_ip_borders__()
         self.min_Host, self.max_Host = self.__calculate_border_hosts__()
@@ -27,7 +28,7 @@ class IPCalc:
         for oct_ip, oct_mask in zip(self.ip, self.mask):
             net.append(oct_ip & oct_mask)
 
-        mask = self.__negate_mask__(self.mask)
+        mask = self.__negate_mask__(self.mask.copy())
 
         bro = []
         for oct_ip, oct_mask in zip(self.ip, mask):
@@ -58,18 +59,16 @@ class IPCalc:
     @staticmethod
     def __calc_mask__(num):
 
-        mask = ''
-
-        for i in range(num):
-            mask += '1'
-
-        while len(mask) != 32:
-            mask += '0'
-
-        mask_d = []
-
-        for i in range(4):
-            mask_d.append(mask[i*8:(i+1)*8])
+        mask_d = ['', '', '', '']
+        ones = 0
+        for octet in range(4):
+            i = 0
+            while ones < num and i < 8:
+                mask_d[octet] += '1'
+                i += 1
+                ones += 1
+            while len(mask_d[octet]) < 8:
+                mask_d[octet] += '0'
 
         mask = []
 
@@ -85,13 +84,13 @@ class IPCalc:
         for octet in ip:
             if octet > 255 or octet < 0:
                 raise InvalidIPException
-        if len(mask) < 4:
-            mask = int(mask)
+        mask = np.array(mask.split('.')).astype(int)
+        if len(mask) == 1:
+            mask = mask[0]
             if mask < 1 or mask > 30:
                 raise InvalidMaskException
             mask = self.__calc_mask__(int(mask))
         else:
-            mask = np.array(mask.split('.')).astype(int)
             for octet in mask:
                 if octet not in self.__viable_octets:
                     raise InvalidMaskException
@@ -100,12 +99,16 @@ class IPCalc:
         return ip, mask
 
     def __str__(self):
-        string = 'Network: '    + str(self.network)     + '\n' + \
-                 'Broadcast: '  + str(self.broadcast)   + '\n' + \
-                 'Min Host: '   + str(self.min_Host)    + '\n' + \
-                 'Max Host: '   + str(self.max_Host)    + '\n' + \
-                 'Hosts: '      + str(self.hosts)       + '\n'
-
+        if self.__PRINT_TYPE__ == 'dec':
+            string = 'IP: '         + str(self.ip)          + '\n' + \
+                     'Mask: '       + str(self.mask)        + '\n' + \
+                     'Network: '    + str(self.network)     + '\n' + \
+                     'Broadcast: '  + str(self.broadcast)   + '\n' + \
+                     'Min Host: '   + str(self.min_Host)    + '\n' + \
+                     'Max Host: '   + str(self.max_Host)    + '\n' + \
+                     'Hosts: '      + str(self.hosts)       + '\n'
+        else:
+            string = 'Nie chce mi się teraz'
         return string
 
     @staticmethod

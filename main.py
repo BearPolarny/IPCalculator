@@ -4,7 +4,7 @@ from IPCalc import IPCalc, InvalidMaskException, InvalidIPException
 if __name__ == '__main__':
 
     try:
-        ip = IPCalc(input('Podaj IP: '), input('Podaj Maskę: '))
+        ip = IPCalc(input('Podaj IP: '), input('Podaj Maskę: '), input('"bin" czy "dec"? '))
         print(ip)
     except InvalidMaskException:
         print('Podana maska jest nieprawidłowa')
