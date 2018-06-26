@@ -1,7 +1,6 @@
 from IPCalc import IPCalc, InvalidMaskException, InvalidIPException
 
 
-
 if __name__ == '__main__':
 
     try:

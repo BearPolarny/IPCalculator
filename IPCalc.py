@@ -80,6 +80,8 @@ class IPCalc:
 
     def __read_ip__(self, ip, mask):
         ip = np.array(ip.split('.')).astype(int)
+        if len(ip) != 4:
+            raise InvalidIPException
         for octet in ip:
             if octet > 255 or octet < 0:
                 raise InvalidIPException
@@ -93,7 +95,8 @@ class IPCalc:
             for octet in mask:
                 if octet not in self.__viable_octets:
                     raise InvalidMaskException
-
+            if mask[3] == 255 or mask[3] == 254 or not self.__is_sorted__(mask):
+                raise InvalidMaskException
         return ip, mask
 
     def __str__(self):
@@ -104,3 +107,10 @@ class IPCalc:
                  'Hosts: '      + str(self.hosts)       + '\n'
 
         return string
+
+    @staticmethod
+    def __is_sorted__(a):
+        for i in range(a.size - 1):
+            if a[i + 1] > a[i]:
+                return False
+        return True
