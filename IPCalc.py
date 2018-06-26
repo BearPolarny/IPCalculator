@@ -27,12 +27,12 @@ class IPCalc:
             for octet in ip:
                 if octet > 255 or octet < 0:
                     raise InvalidIPException
-        except Exception:
+        except (TypeError, ValueError):
             raise InvalidIPException
 
         try:
             mask = np.array(mask.split('.'))
-            if mask.size != 1 or mask.size != 4:
+            if mask.size != 1 and mask.size != 4:
                 raise InvalidMaskException
             mask = mask.astype(int)
             if mask.size == 1:
@@ -46,7 +46,7 @@ class IPCalc:
                         raise InvalidMaskException
                 if mask[3] == 255 or mask[3] == 254 or not self.__is_sorted__(mask):
                     raise InvalidMaskException
-        except Exception:
+        except (TypeError, ValueError):
             raise InvalidMaskException
 
         return ip, mask
